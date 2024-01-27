@@ -18,14 +18,20 @@ except ImportError:
 # %%
 timer = Timer()
 mode = ""
+System_Sentence_Start = ""
+System_Sentence_End = ""
 if Config.language == "zh-TW":  
   if Config.mode == "Home Security"   : mode = "居家安全"
   if Config.mode == "Error statistics": mode = "誤差統計"
   if Config.mode == "Area Detection"  : mode = "區域檢測"
+  System_Sentence_Start = f"毫米波雷達定位事件通知系統啟動，開啟{mode}模式"
+  System_Sentence_End = "毫米波雷達定位事件通知系統關閉"
 if Config.language == "en-US":  
   if Config.mode == "Home Security"   : mode = "Home Security"
   if Config.mode == "Error statistics": mode = "Error statistics"
   if Config.mode == "Area Detection"  : mode = "Area Detection"
+  System_Sentence_Start = f"Millimeter wave radar positioning event notification system starts, turn on {mode} mode"
+  System_Sentence_End = "Millimeter wave radar positioning event notification system is closed"
 
 timer.start()
 mmWaveRadarPositioningSystem = MmWaveRadarPositioningSystem(
@@ -64,7 +70,7 @@ if Config.alerter.emailBot.enabled: Notify_EmailBot = Notify.EmailBot(Notify.Ema
 if Config.alerter.lineBot .enabled: Notify_LineBot  = Notify.LineBot(Config.alerter.lineBot.access_token)
 if Config.alerter.zenBot  .enabled: 
   Notify_ZenBot= Notify.ZenBot(Config.alerter.zenBot.host)
-  Notify_ZenBot.expression(facial = Notify.ZenBotFace.DEFAULT, sentence=f"毫米波雷達定位系統啟動，開啟{mode}模式")
+  Notify_ZenBot.expression(facial = Notify.ZenBotFace.DEFAULT, sentence=System_Sentence_Start)
 if Config.debug: print(f"[{datetime.datetime.now()}] Alart configuration completed, used for a total of {timer.now()} second")
 
 mmWaveRadarPositioningSystem.start()
@@ -94,4 +100,4 @@ try:
       if len(records) > Config.detection.TimeToLive: records.pop(0)
       while timer.now() < Config.device.FramePeriodicity_ms/1000: pass
 except KeyboardInterrupt:
-  if Config.alerter.zenBot.enabled: Notify_ZenBot.expression(sentence="毫米波雷達定位系統關閉")
+  if Config.alerter.zenBot.enabled: Notify_ZenBot.expression(sentence=System_Sentence_End)

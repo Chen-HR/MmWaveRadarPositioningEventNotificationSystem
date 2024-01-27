@@ -1,4 +1,4 @@
-# Millimeter Wave Radar System
+# Millimeter Wave Radar Positioning Event Notification System
 
 ## Library dependencies
 
